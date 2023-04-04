@@ -4,15 +4,15 @@ inputs:
   merge-strategy:
     description: Merge strategy to use when enabling automerge
     required: true
-    default: "merge"
+    default: 'merge'
   prod-semver-autoapprovals:
     description: 'Semver levels for which to automatically approve the PR for production dependencies'
     required: true
-    default: "minor,patch"
+    default: 'minor,patch'
   dev-semver-autoapprovals:
     description: 'Semver levels for which to automatically approve the PR for development dependencies'
     required: true
-    default: "major,minor,patch"
+    default: 'major,minor,patch'
   github-token:
     description: 'The GITHUB_TOKEN secret'
     default: ${{ github.token }}
@@ -28,11 +28,11 @@ runs:
       id: review-pr
       shell: python
       run: |
-        review_pr.py
-          --semver-level ${{ steps.dependabot-metadata.outputs.update-type }}
-          --dependency-type ${{ steps.dependabot-metadata.outputs.dependency-type }}
-          --prod-semver-autoapprovals ${{ inputs.prod-semver-autoapprovals }}
-          --dev-semver-autoapprovals ${{ inputs.dev-semver-autoapprovals }}
+        review_pr.py \
+          --semver-level '${{ steps.dependabot-metadata.outputs.update-type }}' \
+          --dependency-type '${{ steps.dependabot-metadata.outputs.dependency-type }}' \
+          --prod-semver-autoapprovals '${{ inputs.prod-semver-autoapprovals }}' \
+          --dev-semver-autoapprovals '${{ inputs.dev-semver-autoapprovals }}'
     - name: Debug review-pr
       shell: bash
       run: echo ${{ toJson(steps.review-pr.outputs) }}

@@ -15,6 +15,6 @@ jobs:
       - name: Enable conditional auto merge
         uses: ./
         with:
-          merge-strategy: "squash"
-          prod-semver-autoapprovals: "patch"
+          merge-strategy: squash
+          prod-semver-autoapprovals: patch
           github-token: ${{ github.token }}
