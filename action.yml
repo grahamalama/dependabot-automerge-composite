@@ -1,0 +1,55 @@
+name: 'Dependabot Automerge'
+description: 'Automatically approve and merge Dependabot PRs'
+inputs:
+  merge-strategy:
+    description: Merge strategy to use when enabling automerge
+    required: true
+    default: "merge"
+  prod-semver-autoapprovals:
+    description: 'Semver levels for which to automatically approve the PR for production dependencies'
+    required: true
+    default: "minor,patch"
+  dev-semver-autoapprovals:
+    description: 'Semver levels for which to automatically approve the PR for development dependencies'
+    required: true
+    default: "major,minor,patch"
+  github-token:
+    description: 'The GITHUB_TOKEN secret'
+    default: ${{ github.token }}
+runs:
+  using: composite
+  steps:
+    - name: Dependabot metadata
+      id: dependabot-metadata
+      uses: dependabot/fetch-metadata@v1
+      with:
+        github-token: "${{ inputs.github-token }}"
+    - name: Review PR
+      id: review-pr
+      shell: python
+      run: |
+        review_pr.py
+          --semver-level ${{ steps.dependabot-metadata.outputs.update-type }}
+          --dependency-type ${{ steps.dependabot-metadata.outputs.dependency-type }}
+          --prod-semver-autoapprovals ${{ inputs.prod-semver-autoapprovals }}
+          --dev-semver-autoapprovals ${{ inputs.dev-semver-autoapprovals }}
+    - name: Debug review-pr
+      shell: bash
+      run: echo ${{ toJson(steps.review-pr.outputs) }}
+    - name: Enable auto-merge on PR
+      shell: bash
+      run: gh pr merge --auto --${{ inputs.merge-strategy }} "${{ github.event.pull_request.html_url }}"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+    - name: Approve PR
+      if: ${{ steps.review-pr.outputs.should-approve }}
+      shell: bash
+      run: gh pr review "${{ github.event.pull_request.html_url }}" --approve --body "${{ steps.review-pr.outputs.review-message }}"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+    - name: Comment on non-approval of PR
+      if: ${{ !(steps.review-pr.outputs.should-approve) }}
+      shell: bash
+      run: gh pr comment "${{ github.event.pull_request.html_url }}" --body "${{ steps.review-pr.outputs.review-message }}"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}

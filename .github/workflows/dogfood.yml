@@ -1,0 +1,20 @@
+name: Dependabot auto-merge
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Enable conditional auto merge
+        uses: ./
+        with:
+          merge-strategy: "squash"
+          prod-dep-semver-autoapprove: "patch"
+          github-token: "foobar"
