@@ -38,9 +38,6 @@ runs:
           --dependency-type "${{ steps.dependabot-metadata.outputs.dependency-type }}" \
           --prod-semver-autoapprovals ${{ inputs.prod-semver-autoapprovals }} \
           --dev-semver-autoapprovals ${{ inputs.dev-semver-autoapprovals }}
-    - name: Debug review-pr
-      shell: bash
-      run: echo ${{ toJson(steps.review-pr.outputs) }}
     - name: Enable auto-merge on PR
       shell: bash
       run: gh pr merge --auto --${{ inputs.merge-strategy }} "${{ github.event.pull_request.html_url }}"
