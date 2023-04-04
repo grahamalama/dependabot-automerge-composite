@@ -16,5 +16,5 @@ jobs:
         uses: ./
         with:
           merge-strategy: "squash"
-          prod-dep-semver-autoapprove: "patch"
-          github-token: "foobar"
+          prod-semver-autoapprovals: "patch"
+          github-token: ${{ github.token }}
