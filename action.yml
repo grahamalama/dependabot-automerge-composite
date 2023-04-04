@@ -26,13 +26,13 @@ runs:
         github-token: "${{ inputs.github-token }}"
     - name: Review PR
       id: review-pr
-      shell: python
+      shell: bash
       run: |
-        review_pr.py \
-          --semver-level '${{ steps.dependabot-metadata.outputs.update-type }}' \
-          --dependency-type '${{ steps.dependabot-metadata.outputs.dependency-type }}' \
-          --prod-semver-autoapprovals '${{ inputs.prod-semver-autoapprovals }}' \
-          --dev-semver-autoapprovals '${{ inputs.dev-semver-autoapprovals }}'
+        python review_pr.py \
+          --semver-level "${{ steps.dependabot-metadata.outputs.update-type }}" \
+          --dependency-type "${{ steps.dependabot-metadata.outputs.dependency-type }}" \
+          --prod-semver-autoapprovals ${{ inputs.prod-semver-autoapprovals }} \
+          --dev-semver-autoapprovals ${{ inputs.dev-semver-autoapprovals }}
     - name: Debug review-pr
       shell: bash
       run: echo ${{ toJson(steps.review-pr.outputs) }}
