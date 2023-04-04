@@ -99,7 +99,7 @@ def main(
     )
     set_output(
         {
-            "should-approve": should_approve,
+            "should-approve": str(should_approve).lower(),
             "review-message": review_message,
         }
     )
