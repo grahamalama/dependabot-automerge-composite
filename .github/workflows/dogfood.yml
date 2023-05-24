@@ -7,14 +7,9 @@ permissions:
   pull-requests: write
 
 jobs:
-  test:
+  review-dependabot-pr:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Enable conditional auto merge
-        uses: ./
-        with:
-          merge-strategy: squash
-          prod-semver-autoapprovals: patch
-          github-token: ${{ github.token }}
+      - name: Enable Dependabot automation
+        uses: mozilla/syseng-pod/actions/dependabot-automerge
